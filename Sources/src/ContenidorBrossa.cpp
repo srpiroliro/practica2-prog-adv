@@ -46,15 +46,15 @@ class ContenidorBrossa {
         string getTipus(){
             switch(color){
                 case GROC:
-                    return "Groc";
+                    return "Plastic";
                 case GRIS:
-                    return "Gris";
+                    return "Rebuig";
                 case MARRO:
-                    return "Marro";
+                    return "Organic";
                 case VERD:
-                    return "Verd";
+                    return "Vidre";
                 case BLAU:
-                    return "Blau";
+                    return "Paper";
                 default:
                     return "Desconegut";
             }
@@ -90,6 +90,20 @@ class ContenidorBrossa {
             }
         }
 
+        void toString(){
+            cout << "Codi: " << codi << endl;
+            cout << "Color: " << getTipus() << endl;
+            if(ubicacio != NULL) cout << "Ubicacio: " << ubicacio << endl;
+            else cout << "Ubicacio: Retirat" << endl;
+            cout << setprecision(2) << "Tara: " << tara << endl;
+        }
+
+        virtual void buidat(float pes) = 0;
+        
+        virtual string getType() = 0;
+
+        virtual string getReciclat() = 0;
+
         //TODO: Obligatòriament en la implementació d’un d’aquest operadors s’ha d’invocar als altres dos, i a més usant directament la simbologia de l’operador
         bool operator==(ContenidorBrossa *p){
             return codi.compare(p.codi);
@@ -100,11 +114,13 @@ class ContenidorBrossa {
         }
 
         bool operator>(ContenidorBrossa *p){
-            return this->getCodi() > p.getCodi();
+            return !(this() < p);
         }
 
+        ~ContenidorBrossa(){}
+
     protected:
-        int tara;
+        float tara;
     
     string codi;
     int color;
