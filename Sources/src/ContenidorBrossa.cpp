@@ -33,7 +33,7 @@ class ContenidorBrossa {
             int anyRetirada,
             float tara
         ){
-            this(codi, color, NULL, 0, tara);
+            this(codi, color, NULL, 0, tara); //EL ROGER M'HA DIT QUE NO ES POT IGUALAR UN STRING A NULL EN C++
             this->anyRetirada=anyRetirada;
         }
 
