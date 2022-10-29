@@ -19,7 +19,13 @@ class ContenidorBrossa {
     public:
 
         // CONSTRUCTORS
-        ContenidorBrossa(string codi,int color,string ubicacio,int anyColocacio,float tara){ 
+        ContenidorBrossa(
+            string codi,
+            int color,
+            string ubicacio,
+            int anyColocacio,
+            float tara
+        ){ 
             if(verificar_codi(codi)) this->codi=codi;
             else throw "El codi ha de tenir 2 lletres i 4 numeros separats per un guio.";
 
@@ -45,9 +51,14 @@ class ContenidorBrossa {
 
 
         // CONSTANTS
-        enum {GROC, GRIS, MARRO, VERD, BLAU}; // enum es const
+        // enum {GROC, GRIS, MARRO, VERD, BLAU}; // enum es const
         // aka: GROC=0, GRIS=1, MARRO=2 ...
 
+        static const int GROC=0;
+        static const int GRIS=1;
+        static const int MARRO=2;
+        static const int VERD=3;
+        static const int BLAU=4;
 
         // GETS
         string getTipusBrossa(){
@@ -75,10 +86,8 @@ class ContenidorBrossa {
         // string getCodi(){return codi;}
         
 
-
         // SETS
         void setUbicacio(string ubicacio){this->ubicacio=ubicacio;}
-
 
         // ACTIONS
         void retirarViaPublica(){
@@ -117,9 +126,9 @@ class ContenidorBrossa {
         //         i a més usant directament la simbologia de l’operador. Recomanació: usar el 
         //         mètode compare per comparar string (llibreria <string.h>)
 
-        bool operator>(ContenidorBrossa *c){return codi.compare(c->getCodi())>0;} // TODO
-        bool operator<(ContenidorBrossa *c){return !((*this)>c);} 
-        bool operator==(ContenidorBrossa *c){return ( !( (*this)>c ) && !( (*this)<c) );} // TODO: (*this) or (this)
+        bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;} // TODO
+        bool operator<(ContenidorBrossa *p){return !((*this)>p);} 
+        bool operator==(ContenidorBrossa *p){return ( !( (*this)>p ) && !( (*this)<p) );} // TODO: (*this) or (this)
 
         // NOT LEGAL
         //      bool operator>(ContenidorBrossa& p){return !(*this<p);}
