@@ -1,10 +1,3 @@
-// TO DO:
-//      1. comprovar que implementacio mes efficent es correcte (legal)
-//           en cas de que no ho sigui, borrar tot que tingui 
-//                 // implementacio mes efficient. 
-//           i substituirho per la 
-//                 // implementacio NO efficient.
-
 #include <string>
 #include <iostream>
 #include "../ContenidorBrossa.h"
@@ -22,12 +15,11 @@ class Rebuig: public ContenidorBrossa {
             // implementacio mes efficient.
             UMESURA="TONES";
             EFFICIENCY=0.75;
-            TIPUS="rebuig";
         };
 
-
+        float getQReciclada(){return reciclat;}
+        string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
         // implementacio NO efficient.
-        // string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
         // string getType(){return TIPUS;} 
 
         // implementacio NO efficient.
@@ -40,5 +32,5 @@ class Rebuig: public ContenidorBrossa {
 
         ~Rebuig(){}
         
-    float reciclat; // tones
+    float reciclat=0; // tones
 };
