@@ -21,7 +21,6 @@ class Poblacio{
                 contenidors[i]->con = NULL;
                 contenidors[i]->seg = NULL;
             }
-            
         }
         Poblacio(ContenidorBrossa *p):Poblacio(){
             afegirContenidor(p);
