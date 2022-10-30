@@ -17,45 +17,49 @@ class Poblacio{
     public:
         Poblacio(){
             contenidors=new node*[CONTENIDORS_LEN];
-            for (int i = 0; i < 5; i++){
-                contenidors[i]->con = NULL;
-                contenidors[i]->seg = NULL;
+            for (int i=0;i<CONTENIDORS_LEN;i++){
+                contenidors[i]->con=NULL;
+                contenidors[i]->seg=NULL;
             }
         }
-        Poblacio(ContenidorBrossa *p):Poblacio(){
-            afegirContenidor(p);
-        }
+        Poblacio(ContenidorBrossa *p):Poblacio(){afegirContenidor(p);}
 
-        void afegirContenidor(ContenidorBrossa *p){ // TEST
+        void afegirContenidor(ContenidorBrossa *p){
             int ind=getTipusId(p->getType());
 
-            node *curr=contenidors[ind]; // p->getColor()
-            // findLast()
-            while(curr){
-                if(curr->con->getCodi()==p->getCodi()) 
-                    throw("Ja hi existeix!");
-                curr=curr->seg;
+            // TODO: optimitzable? no cal afegir al final de la linkedlist
+
+            node *curr=contenidors[ind];
+            if(!curr->con) curr->con=p;
+            // else if(hiEs(p->getCodi())) throw("Ja hi existeix!");
+            
+            else {
+                while(curr){
+                    if(curr->con==p) throw("Ja hi existeix!");
+                    curr=curr->seg;
+                }
+                node *nou=new node; 
+                nou->con=p; nou->seg=NULL;
+                curr->seg=nou;
             }
-            node *nou; nou->con=p;
-            curr->seg=nou;
         }
 
         void afegirContenidor(string codi, int color, string ubicacio, int anyColocacio, float tara){
             ContenidorBrossa *p;
             switch (color){
-                case 0:
+                case ContenidorBrossa::GROC:
                     p=new Plastic(codi,ubicacio,anyColocacio,tara);
                     break;
-                case 1:
+                case ContenidorBrossa::GRIS:
                     p=new Rebuig(codi,ubicacio,anyColocacio,tara);
                     break;
-                case 2:
+                case ContenidorBrossa::MARRO:
                     p=new Organic(codi,ubicacio,anyColocacio,tara);
                     break;
-                case 3:
+                case ContenidorBrossa::VERD:
                     p=new Vidre(codi,ubicacio,anyColocacio,tara);
                     break;
-                case 4:
+                case ContenidorBrossa::BLAU:
                     p=new Paper(codi,ubicacio,anyColocacio,tara);
                     break;
                 default: throw("uknown color");
@@ -66,6 +70,9 @@ class Poblacio{
         string hiEs(string codi){
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
+
+                // TODO: curr.con pot ser NULL
+
                 while(curr){
                     if(curr->con->getCodi()==codi) 
                         return curr->con->getType();
@@ -98,7 +105,7 @@ class Poblacio{
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr){
-                    if(curr->con->getQReciclada()>r->getQReciclada()) r=curr->con; // TODO
+                    if(curr->con->getQReciclada()>r->getQReciclada()) r=curr->con;
                     curr=curr->seg;
                 }
             }
@@ -146,8 +153,6 @@ class Poblacio{
         
 
         ~Poblacio(){delete[] contenidors;} // "alliberar l’espai ocupat per la població: contenidors, vector i nodes" ???
-
-
     
     string nom;
     int anyCreacio;
@@ -160,10 +165,10 @@ class Poblacio{
     node **contenidors;
     
     int getTipusId(string t){
-        if(t=="Plastic") return 0;
-        if(t=="Rebuig") return 1;
-        if(t=="Organic") return 2;
-        if(t=="Vidre") return 3;
-        if(t=="Paper") return 4;
+        if(t=="Plastic") return ContenidorBrossa::GROC;
+        if(t=="Rebuig") return ContenidorBrossa::GRIS;
+        if(t=="Organic") return ContenidorBrossa::MARRO;
+        if(t=="Vidre") return ContenidorBrossa::VERD;
+        if(t=="Paper") return ContenidorBrossa::BLAU;
     }
 };

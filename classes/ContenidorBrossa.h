@@ -119,7 +119,7 @@ class ContenidorBrossa {
 
 
         // CHECK: implementacio mes efficient.
-        string getType(){return TIPUS;}
+        string getType(){return TIPUS;} // inutil
 
     protected:
         float tara;
