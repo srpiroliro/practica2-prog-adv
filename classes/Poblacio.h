@@ -17,6 +17,11 @@ class Poblacio{
     public:
         Poblacio(){
             contenidors=new node*[CONTENIDORS_LEN];
+            for (int i = 0; i < 5; i++){
+                contenidors[i]->con = NULL;
+                contenidors[i]->seg = NULL;
+            }
+            
         }
         Poblacio(ContenidorBrossa *p):Poblacio(){
             afegirContenidor(p);
