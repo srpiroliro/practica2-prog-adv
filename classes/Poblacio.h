@@ -141,7 +141,7 @@ class Poblacio {
         bool operator==(Poblacio d){return ( !((*this)>d) && !((*this)<d) );} // TODO: (*this) or (this)
         
 
-        ~Poblacio(){delete contenidors;} // "alliberar l’espai ocupat per la població: contenidors, vector i nodes" ???
+        ~Poblacio(){delete[] contenidors;} // "alliberar l’espai ocupat per la població: contenidors, vector i nodes" ???
 
 
     
