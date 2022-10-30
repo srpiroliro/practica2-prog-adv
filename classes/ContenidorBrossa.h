@@ -1,10 +1,3 @@
-// TO DO:
-//      1. DONE
-//      2. verificar_codi()
-//      3. DONE
-//      4. operator==(ContenidorBrossa *c) => (*this) or (this)
-//      5. comprovar si // implementacio mes efficient es legal.
-
 #include <string>
 #include <regex> //legal??
 #include <time.h>
@@ -24,18 +17,18 @@ class ContenidorBrossa {
             float tara
         ){ 
             if(verificar_codi()) this->codi=codi;
-            else throw "El codi ha de tenir 2 lletres i 4 numeros separats per un guio.";
+            else throw("El codi ha de tenir 2 lletres i 4 numeros separats per un guio.");
 
             if(color>=0 && color<=4) this->color=color;
-            else throw "El color ha de ser un valor entre 0 i 4.";
+            else throw("El color ha de ser un valor entre 0 i 4.");
 
             this->ubicacio=ubicacio;
             
             if(anyColocacio<=getAnyActual()) this->anyColocacio=anyColocacio;
-            else throw "No es pot colocar un contenidor en el futur.";
+            else throw("No es pot colocar un contenidor en el futur.");
 
             if(tara>=0) this->tara=tara;
-            else throw "La tara ha de ser un valor positiu.";
+            else throw("La tara ha de ser un valor positiu.");
         }
         ContenidorBrossa(
             string codi, 
@@ -64,7 +57,6 @@ class ContenidorBrossa {
                 case MARRO: return "Organic";
                 case VERD: return "Vidre";
                 case BLAU: return "Paper";
-                default: return "Desconegut";
             }
         }
         string getUbicacio(){
@@ -119,7 +111,7 @@ class ContenidorBrossa {
         // OPERATORS
         bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;}
         bool operator<(ContenidorBrossa *p){return !((*this)>p);} 
-        bool operator==(ContenidorBrossa *p){return ( !( (*this)>p ) && !( (*this)<p) );} // TODO: (*this) or (this)
+        bool operator==(ContenidorBrossa *p){return ( !( (this)>p ) && !( (*this)<p) );} // TODO: (*this) or (this)
 
 
         // DECONSTRUCTOR
@@ -135,7 +127,7 @@ class ContenidorBrossa {
         // CHECK: implementacio mes efficient.
         string UMESURA;
         float EFFICIENCY;
-        string TIPUS;
+        string TIPUS=getTipusBrossa();
 
 
     

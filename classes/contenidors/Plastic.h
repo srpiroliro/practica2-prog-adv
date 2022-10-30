@@ -1,10 +1,3 @@
-// TO DO:
-//      1. comprovar que implementacio mes efficent es correcte (legal)
-//           en cas de que no ho sigui, borrar tot que tingui 
-//                 // implementacio mes efficient. 
-//           i substituirho per la 
-//                 // implementacio NO efficient.
-
 #include <string>
 #include <iostream>
 #include "../ContenidorBrossa.h"
@@ -22,12 +15,11 @@ class Plastic: public ContenidorBrossa {
             // implementacio mes efficient.
             UMESURA="KILOS";
             EFFICIENCY=0.8;
-            TIPUS="Plastic";
         };
 
-
+        float getQReciclada(){return reciclat;}
+        string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
         // implementacio NO efficient.
-        // string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
         // string getType(){return TIPUS;} 
 
         // implementacio NO efficient.
@@ -40,5 +32,5 @@ class Plastic: public ContenidorBrossa {
 
         ~Plastic(){}
         
-    float reciclat;
+    float reciclat=0;
 };
