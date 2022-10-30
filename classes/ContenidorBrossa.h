@@ -1,11 +1,9 @@
 // TO DO:
-// 1. int getCodi() o string getCodi()??
-// 2. regex legal? si no ho es, partir str en tres i: 
-//      [1]!="-" => MAL
-//      si [0] es pot passar a int => gut (try/catch) + lalrgada de 2
-//      comprovar que [2] sigui tot lletres + llargada de 4
-// 3. operator>(ContenidorBrossa *c) => ajustar a la solucio del punt 1.
-// 4. operator==(ContenidorBrossa *c) => (*this) or (this)
+//      1. DONE
+//      2. verificar_codi()
+//      3. DONE
+//      4. operator==(ContenidorBrossa *c) => (*this) or (this)
+//      5. comprovar si // implementacio mes efficient es legal.
 
 #include <string>
 #include <regex> //legal??
@@ -17,7 +15,6 @@ using namespace std;
 
 class ContenidorBrossa {
     public:
-
         // CONSTRUCTORS
         ContenidorBrossa(
             string codi,
@@ -26,7 +23,7 @@ class ContenidorBrossa {
             int anyColocacio,
             float tara
         ){ 
-            if(verificar_codi(codi)) this->codi=codi;
+            if(verificar_codi()) this->codi=codi;
             else throw "El codi ha de tenir 2 lletres i 4 numeros separats per un guio.";
 
             if(color>=0 && color<=4) this->color=color;
@@ -48,7 +45,6 @@ class ContenidorBrossa {
         ):ContenidorBrossa(codi,color,"",0,tara){
             this->anyRetirada=anyRetirada;
         }
-
 
         // CONSTANTS
         // enum {GROC, GRIS, MARRO, VERD, BLAU}; // enum es const
@@ -82,9 +78,7 @@ class ContenidorBrossa {
             if(rest<3) return "Nou";
             return "Seminou";
         }
-        int getCodi(){return stoi(codi.substr(codi.length()-4));} // TODO
-        // string getCodi(){return codi;}
-        
+        string getCodi(){return codi;} 
 
         // SETS
         void setUbicacio(string ubicacio){this->ubicacio=ubicacio;}
@@ -105,6 +99,8 @@ class ContenidorBrossa {
             }
         }
         void toString(){
+            cout << getReciclat(); // CHECK: implementacio mes efficient.
+
             cout << "Codi: " << codi << '\n';
             cout << "Color: " << getTipusBrossa() << '\n';
             if(ubicacio!="") 
@@ -115,41 +111,39 @@ class ContenidorBrossa {
         }
 
         // VIRTUALS
-        virtual void buidat(float pes)=0;
-        virtual string getType()=0; // saber de quina classe és l’objecte sobre el que s’invoca.
-        virtual string getReciclat()=0; // retornarà la quantitat de material reciclat pel contenidor.
+        virtual void buidat(float pes)=0; // paràmetre el pes en quilograms del contenidor abans de buidar
+        virtual string getReciclat()=0;
+        // virtual string getType()=0; // implementacio NO efficient.
 
-        
+
         // OPERATORS
-        //      TO DO:
-        //         Obligatòriament en la implementació d’un d’aquest operadors s’ha d’invocar als ???altres dos???, 
-        //         i a més usant directament la simbologia de l’operador. Recomanació: usar el 
-        //         mètode compare per comparar string (llibreria <string.h>)
-
-        bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;} // TODO
+        bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;}
         bool operator<(ContenidorBrossa *p){return !((*this)>p);} 
         bool operator==(ContenidorBrossa *p){return ( !( (*this)>p ) && !( (*this)<p) );} // TODO: (*this) or (this)
-
-        // NOT LEGAL
-        //      bool operator>(ContenidorBrossa& p){return !(*this<p);}
-        //      bool operator<(ContenidorBrossa& p){return this->getCodi()<p.getCodi();}
-
 
 
         // DECONSTRUCTOR
         ~ContenidorBrossa(){} 
 
+
+        // CHECK: implementacio mes efficient.
+        string getType(){return TIPUS;}
+
     protected:
         float tara;
+
+        // CHECK: implementacio mes efficient.
+        string UMESURA;
+        float EFFICIENCY;
+        string TIPUS;
+
+
     
-    string codi; // identificador, no hi poden haver  dos o més contenidors amb el mateix codi.
-    int color; // valor enter corresponent a alguna de les constants estàtiques de la classe.
-    string ubicacio; // NULL || ""=indica que està al magatzem de l’Ajuntament.
-
-    int anyColocacio; // 4 xifres, representa l’any que entra en servei el contenidor. Si no està ubicat a la via publica el valor d’aquest atribut serà un zero
-    int anyRetirada; // 4xifres, treu de la via publica el contenidor i per tant està al magatzem de l’Ajuntament. Si encara està ubicat a la via publica el valor d’aquest atribut serà zero.
-    // sempre un d'aquests sera 0.
-
+    string codi;
+    int color;
+    string ubicacio;
+    int anyColocacio;
+    int anyRetirada;
 
     
     int getAnyActual(){
@@ -160,9 +154,14 @@ class ContenidorBrossa {
         return now_tm->tm_year+1900;
     }
 
-    bool verificar_codi(string c){
+    // TODO:
+    bool verificar_codi(){
+        // regex legal? si no ho es, partir str en tres i: 
+        // [1]!="-" => MAL
+        // si [0] es pot passar a int => gut (try/catch) + lalrgada de 2
+        // comprovar que [2] sigui tot lletres + llargada de 4
         // verificar si ja existeix?
-        // regex legal?
+
         return regex_match(codi, regex("[a-zA-Z]{2}-\d{4}"));
     }
 };

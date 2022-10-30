@@ -9,7 +9,7 @@
 #include <iostream>
 #include "../ContenidorBrossa.h"
 
-class Organic: public ContenidorBrossa {
+class Plastic: public ContenidorBrossa {
     public:
         // TODO:
         // Cada subclasse informarà a la superclasse del seu color (imprescindible 
@@ -18,11 +18,11 @@ class Organic: public ContenidorBrossa {
         //                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
         //                                                          ?????
 
-        Organic(string codi,string ubicacio,int anyColocacio,int tara):ContenidorBrossa(codi, ContenidorBrossa::MARRO, ubicacio, anyColocacio, tara){
+        Plastic(string codi,string ubicacio,int anyColocacio,int tara):ContenidorBrossa(codi, ContenidorBrossa::GROC, ubicacio, anyColocacio, tara){
             // implementacio mes efficient.
-            UMESURA="TONES";
-            EFFICIENCY=0.9;
-            TIPUS="organic";
+            UMESURA="KILOS";
+            EFFICIENCY=0.8;
+            TIPUS="Plastic";
         };
 
 
@@ -36,10 +36,9 @@ class Organic: public ContenidorBrossa {
         //     cout << getReciclat();
         // }
 
+        void buidat(float pes){reciclat+=EFFICIENCY*(pes-tara);}
 
-        void buidat(float pes){reciclat+=EFFICIENCY*(pes-tara)/1000;}
-
-        ~Organic(){}
-
-    float reciclat; // tones
+        ~Plastic(){}
+        
+    float reciclat;
 };

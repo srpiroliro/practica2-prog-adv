@@ -7,27 +7,26 @@ using namespace std;
 
 class Test {
     public:
-        Test():Test("AA"){};
+        Test():Test("AAS"){};
         Test(string x){
             this->x=x;
         }
-        int operator<(Test& p){
-            return x.compare(p->getX())<0;
-        }
-
+        string A = "ABC";
         string getX(){return x;}
-    private:
+    protected:
         string x;
+    
+};
+class TestA: public Test {
+    public:
+        TestA(string x):Test(Test::A){
+            cout << x << "+"<< Test::A << endl;
+        }
 };
 
-bool te(Test *p){
-    cout << p->x << endl;
-}
 
 int main(){
-    Test a=Test("10");
-    // Test b=Test();
-    // // Test *c = b;
-    // cout << (a<b) << endl;
+    TestA a=TestA("10");
+    cout << a.getX() << endl;
     return 0;
 }
