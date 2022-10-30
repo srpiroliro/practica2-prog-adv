@@ -1,5 +1,5 @@
 #include <iostream>
-#include <ContenidorBrossa.h>
+#include "ContenidorBrossa.h"
 
 using namespace std;
 
@@ -67,5 +67,6 @@ class Poblacio {
             for (int i=0; i<contenidors.size(); i++){
                 if (contenidors[i].getAnyColocacio()==anyColocacio) num++;
             }
-            return
+            return num;
+        }
 };
