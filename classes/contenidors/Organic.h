@@ -22,7 +22,10 @@ class Organic: public ContenidorBrossa {
         // }
 
 
-        void buidat(float pes){reciclat+=EFFICIENCY*(pes-tara)/1000;}
+        void buidat(float pes){
+            if(pes<tara) throw_error("el pes total no pot ser mes petit que el tara.");
+            reciclat+=EFFICIENCY*(pes-tara)/1000;
+        }
 
         ~Organic(){}
 

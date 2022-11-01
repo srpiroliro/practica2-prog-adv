@@ -1,5 +1,4 @@
 #include <string>
-#include <regex> //legal??
 #include <time.h>
 #include <iostream>
 #include <iomanip>
@@ -61,7 +60,7 @@ class ContenidorBrossa {
                 case GRIS: return "Rebuig";
                 case MARRO: return "Organic";
                 case VERD: return "Vidre";
-                default: return "Paper"; // case BLAU:
+                default: return "Paper";
             }
         }
         string getUbicacio(){
@@ -82,19 +81,21 @@ class ContenidorBrossa {
             if(ubicacio=="") retirarViaPublica();
             else{
                 this->ubicacio=ubicacio;
-                this->anyColocacio=getAnyActual();
+                if(anyColocacio==0)
+                    anyColocacio=getAnyActual();
+                anyRetirada=0;
             }
         }
 
         // ACTIONS
         void retirarViaPublica(){
-            if(ubicacio=="") throw_error("El contenidor no esta a la via pública");
-            this->anyRetirada=getAnyActual();
-            this->ubicacio="";
-            this->anyColocacio=0;
+            if(ubicacio=="") 
+                throw_error("El contenidor no esta a la via pública");
+            anyRetirada=getAnyActual();
+            ubicacio=""; anyColocacio=0;
         }
         void toString(){
-            cout << getReciclat() << '\n'; // mes efficient.
+            cout << getReciclat() << '\n'; // implementacio mes efficient.
             cout << "Codi: " << codi << '\n';
             cout << "Color: " << getTipusBrossa() << '\n';
             if(ubicacio!="") cout << "Ubicacio: " << ubicacio << '\n';
@@ -108,7 +109,6 @@ class ContenidorBrossa {
         virtual float getQReciclat()=0;
         // virtual string getType()=0; // implementacio NO efficient.
 
-
         // OPERATORS
         bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;}
         bool operator<(ContenidorBrossa *p){return ((*p)>(this));} 
@@ -121,9 +121,13 @@ class ContenidorBrossa {
     protected:
         float tara;
 
-        // CHECK: implementacio mes efficient.
+        // implementacio mes efficient.
         string UMESURA;
         float EFFICIENCY;
+
+        void throw_error(string error){
+            cerr<<"ERROR: "<<error<<endl; throw 0;
+        }
 
     string codi, ubicacio;
     int color,anyColocacio,anyRetirada;
@@ -151,14 +155,9 @@ class ContenidorBrossa {
             throw_error("el 3r char ha de ser un \"-\"!");
         if(!("AA"<=letters&&letters<="ZZ"))
             throw_error("els dos primers chars had d'estar entre AA-ZZ!");
-        if (ex || x<1111 || x>9999) 
-            throw_error("el rang dels nums ha de ser [1111, 9999]");
+        if (ex || x<1 || x>9999) 
+            throw_error("el rang dels nums ha de ser [1, 9999]");
         
         return 1;
-    }
-
-    // mes efficient seria crear una classe Error i guardarho alla.
-    void throw_error(string error){
-        cerr<<"ERROR: "<<error<<endl; throw;
     }
 };

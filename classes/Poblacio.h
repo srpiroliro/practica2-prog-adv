@@ -8,8 +8,8 @@
 #include "contenidors/Rebuig.h"
 #include "contenidors/Vidre.h"
 
-
 #define CONTENIDORS_LEN 5
+
 
 using namespace std;
 
@@ -17,17 +17,13 @@ class Poblacio{
     public:
         Poblacio(){
             contenidors=new node*[CONTENIDORS_LEN];
-            for (int i=0;i<CONTENIDORS_LEN;i++){
-                // node *aux=new node;
-                // aux->con=NULL; aux->seg=NULL;
-                // contenidors[i]=aux;
-
+            for (int i=0;i<CONTENIDORS_LEN;i++)
                 contenidors[i]=NULL;
-            }
         }
         Poblacio(ContenidorBrossa *p):Poblacio(){afegirContenidor(p);}
 
         void afegirContenidor(ContenidorBrossa *p){
+            if(!p) throw_error("no pots passar valors nulls!");
             // 1.
             string topic=""; bool ex=0;
             try{
@@ -39,23 +35,6 @@ class Poblacio{
                 contenidors[ind]=nou;
             }
             if(topic!="") throw_error("ja existeix un d'igual!");
-
-            // 2.
-            // int ind=getTipusId(p->getTipusBrossa()); // p->getType()
-            // node *curr=contenidors[ind];
-            // node *nou=new node; nou->con=p; nou->seg=NULL;
-
-            // if(!curr) contenidors[ind]=nou;
-            // else{
-            //     while(curr){
-            //         if(curr->con==p){
-            //             delete nou;
-            //             throw_error("Ja hi existeix!");
-            //         }
-            //         curr=curr->seg;
-            //     }
-            //     curr->seg=nou;
-            // }
         }
 
         void afegirContenidor(string codi, int color, string ubicacio, int anyColocacio, float tara){
@@ -71,7 +50,7 @@ class Poblacio{
             afegirContenidor(p);
         }
 
-        string hiEs(string codi, bool display=1){ // bool display sha afegit per estetica.
+        string hiEs(string codi, bool display=1){ // INFO: bool display sha afegit per estetica.
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr!=NULL){
@@ -85,20 +64,26 @@ class Poblacio{
         }
 
         void eliminarContenidor(ContenidorBrossa *c){
-            string color=hiEs(c->getCodi());
-            int tipus=getTipusId(color);
+            int tipus=getTipusId(c->getTipusBrossa());
 
-            node *anterior=contenidors[tipus];
-            if(*(anterior->con)==c) contenidors[tipus]=anterior->seg;
+            node *anterior=contenidors[tipus]; bool trobat=0;
+            if(*(anterior->con)==c) {
+                contenidors[tipus]=anterior->seg; 
+                trobat=1;
+            }
             else{
-                bool trobat=0;
                 while(anterior->seg!=NULL && !trobat){
                     cout << anterior->seg->con->getCodi() << endl;
                     if(*(anterior->seg->con)==c){
-                        anterior->seg=anterior->seg->seg; trobat=1;
+                        node *aux=anterior->seg;
+                        anterior->seg=anterior->seg->seg; 
+                        delete aux;
+
+                        trobat=1;
                     } else anterior=anterior->seg;
                 }
             }
+            if(!trobat) throw_error("no existeix");
         }
 
         ContenidorBrossa* mesRendiment(){
@@ -136,7 +121,6 @@ class Poblacio{
                         while(curr){
                             if(c==1)
                                 cout << "==============  Contenidors de " << curr->con->getTipusBrossa() << "  ==============\n\n";
-                            
                             cout << "Contenidor "<<to_string(c)<<":\n--------------\n";
                             curr->con->toString(); curr=curr->seg;
                             c++;
@@ -154,7 +138,10 @@ class Poblacio{
         bool operator==(Poblacio d){return ( !((*this)>d) && !((*this)<d) );}
         
 
-        ~Poblacio(){delete[] contenidors;}
+        ~Poblacio(){
+            for(int i=0;i<CONTENIDORS_LEN; i++) delete contenidors[i];
+            delete[] contenidors;
+        }
     
     string nom;
     int anyCreacio;
@@ -174,7 +161,6 @@ class Poblacio{
         return ContenidorBrossa::BLAU; // if(t=="Paper") 
     }
 
-    // mes efficient seria crear una classe Error i guardarho alla.
     void throw_error(string error, bool display=1){
         if(display) cerr<<"ERROR: "<<error<<endl;
         throw 0;
