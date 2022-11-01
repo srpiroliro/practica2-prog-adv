@@ -30,27 +30,32 @@ class Poblacio{
         void afegirContenidor(ContenidorBrossa *p){
             // 1.
             string topic=""; bool ex=0;
-            try{topic=hiEs(p->getCodi());}
-            catch(exception& e){ex=1;}
-            
-            if(ex){
-                int ind=getTipusId(topic);
+            try{
+                topic=hiEs(p->getCodi(), 0);
+            }catch(...){
+                int ind=getTipusId(p->getTipusBrossa()); // p->getType()
                 node *aux=contenidors[ind];
                 node *nou=new node; nou->con=p; nou->seg=aux;
                 contenidors[ind]=nou;
             }
+            if(topic!="") throw_error("ja existeix un d'igual!");
 
             // 2.
-            // int ind=getTipusId(p->getType()); // p->getType()
+            // int ind=getTipusId(p->getTipusBrossa()); // p->getType()
             // node *curr=contenidors[ind];
-            
-            // while(curr){
-            //     if(curr->con==p) 
-            //         throw_error("Ja hi existeix!");
-            //     curr=curr->seg;
-            // }
             // node *nou=new node; nou->con=p; nou->seg=NULL;
-            // curr->seg=nou;
+
+            // if(!curr) contenidors[ind]=nou;
+            // else{
+            //     while(curr){
+            //         if(curr->con==p){
+            //             delete nou;
+            //             throw_error("Ja hi existeix!");
+            //         }
+            //         curr=curr->seg;
+            //     }
+            //     curr->seg=nou;
+            // }
         }
 
         void afegirContenidor(string codi, int color, string ubicacio, int anyColocacio, float tara){
@@ -66,7 +71,7 @@ class Poblacio{
             afegirContenidor(p);
         }
 
-        string hiEs(string codi){
+        string hiEs(string codi, bool display=1){ // bool display sha afegit per estetica.
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr!=NULL){
@@ -75,10 +80,11 @@ class Poblacio{
                     curr=curr->seg;
                 }
             }
-            throw_error("no existeix");
+            throw_error("no existeix", display);
+            return "";
         }
 
-        void eliminarContenidor(ContenidorBrossa *c){ // TEST
+        void eliminarContenidor(ContenidorBrossa *c){
             string color=hiEs(c->getCodi());
             int tipus=getTipusId(color);
 
@@ -87,6 +93,7 @@ class Poblacio{
             else{
                 bool trobat=0;
                 while(anterior->seg!=NULL && !trobat){
+                    cout << anterior->seg->con->getCodi() << endl;
                     if(*(anterior->seg->con)==c){
                         anterior->seg=anterior->seg->seg; trobat=1;
                     } else anterior=anterior->seg;
@@ -99,7 +106,7 @@ class Poblacio{
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr){
-                    if(curr->con->getQReciclat()>r->getQReciclat()) 
+                    if(!r || curr->con->getQReciclat()>r->getQReciclat()) 
                         r=curr->con;
                     curr=curr->seg;
                 }
@@ -122,19 +129,22 @@ class Poblacio{
         }
 
         void toString(){
-            for(int i=0;i<CONTENIDORS_LEN; i++){
-                node *curr=contenidors[i]; int c=1;
-                while(curr){
-                    if(c==1){
-                        cout << "Contenidors de " << curr->con->getTipusBrossa() << ":\n";
-                        cout << "+++++++++++++++++++++++++++++++++++\n\n";
+            if(getQuants()!=0){ // potser no es efficient?
+                for(int i=0;i<CONTENIDORS_LEN; i++){
+                    node *curr=contenidors[i]; int c=1;
+                    if(curr){
+                        while(curr){
+                            if(c==1)
+                                cout << "==============  Contenidors de " << curr->con->getTipusBrossa() << "  ==============\n\n";
+                            
+                            cout << "Contenidor "<<to_string(c)<<":\n--------------\n";
+                            curr->con->toString(); curr=curr->seg;
+                            c++;
+                        }
+                        cout << "====================================================\n\n\n";
                     }
-                    cout << "\nContenidor "<<to_string(c)<<":\n";
-                    curr->con->toString(); curr=curr->seg;
-                    c++;
                 }
-                cout << "\n-----------------------------------" << "\n\n";
-            }
+            } else cout<<"CAP CONTENIDOR!"<<'\n';
             cout << endl;
         }
 
@@ -161,11 +171,12 @@ class Poblacio{
         if(t=="Rebuig") return ContenidorBrossa::GRIS;
         if(t=="Organic") return ContenidorBrossa::MARRO;
         if(t=="Vidre") return ContenidorBrossa::VERD;
-        if(t=="Paper") return ContenidorBrossa::BLAU;
+        return ContenidorBrossa::BLAU; // if(t=="Paper") 
     }
 
     // mes efficient seria crear una classe Error i guardarho alla.
-    void throw_error(string error){
-        cerr<<"ERROR: "<<error<<endl; throw;
+    void throw_error(string error, bool display=1){
+        if(display) cerr<<"ERROR: "<<error<<endl;
+        throw 0;
     }
 };

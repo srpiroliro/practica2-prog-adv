@@ -4,7 +4,7 @@
 
 class Vidre: public ContenidorBrossa {
     public:
-        Vidre(string codi,string ubicacio,int anyColocacio,int tara):ContenidorBrossa(codi, ContenidorBrossa::GRIS, ubicacio, anyColocacio, tara){
+        Vidre(string codi,string ubicacio,int anyColocacio,int tara):ContenidorBrossa(codi, ContenidorBrossa::VERD, ubicacio, anyColocacio, tara){
             // implementacio mes efficient.
             UMESURA="UNITAT";
             EFFICIENCY=3; // 1kg = 3u

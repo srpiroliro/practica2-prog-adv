@@ -4,6 +4,8 @@
 #include <iostream>
 #include <iomanip>
 
+#pragma once
+
 using namespace std;
 
 class ContenidorBrossa {
@@ -16,7 +18,7 @@ class ContenidorBrossa {
             int anyColocacio,
             float tara
         ){ 
-            if(!verificar_codi()) 
+            if(!verificar_codi(codi)) 
                 throw_error("El codi ha de tenir 2 lletres i 4 numeros separats per un guio.");
             this->codi=codi;
 
@@ -59,7 +61,7 @@ class ContenidorBrossa {
                 case GRIS: return "Rebuig";
                 case MARRO: return "Organic";
                 case VERD: return "Vidre";
-                case BLAU: return "Paper";
+                default: return "Paper"; // case BLAU:
             }
         }
         string getUbicacio(){
@@ -92,14 +94,12 @@ class ContenidorBrossa {
             this->anyColocacio=0;
         }
         void toString(){
-            cout << getReciclat(); // mes efficient.
+            cout << getReciclat() << '\n'; // mes efficient.
             cout << "Codi: " << codi << '\n';
             cout << "Color: " << getTipusBrossa() << '\n';
-            if(ubicacio!="") 
-                cout << "Ubicacio: " << ubicacio << '\n';
-            else 
-                cout << "Ubicacio: Retirat" << '\n';
-            cout << "Tara: " << fixed << setprecision(2) << tara << endl;
+            if(ubicacio!="") cout << "Ubicacio: " << ubicacio << '\n';
+            else cout << "Ubicacio: Retirat" << '\n';
+            cout << "Tara: " << fixed << setprecision(2) << tara << '\n' << endl;
         }
 
         // VIRTUALS
@@ -111,7 +111,7 @@ class ContenidorBrossa {
 
         // OPERATORS
         bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;}
-        bool operator<(ContenidorBrossa *p){return !((*this)>(p));} 
+        bool operator<(ContenidorBrossa *p){return ((*p)>(this));} 
         bool operator==(ContenidorBrossa *p){return ( !( (*this)>p ) && !( (*this)<p) );}
 
 
@@ -136,7 +136,7 @@ class ContenidorBrossa {
         return now_tm->tm_year+1900;
     }
 
-    bool verificar_codi(){
+    bool verificar_codi(string codi){
         if(codi.length()!=7) 
             throw_error("el codi ha de ser XX-YYY, X sent lletres majs, i Y nums.");
     
