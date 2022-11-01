@@ -17,8 +17,9 @@ class Organic: public ContenidorBrossa {
             EFFICIENCY=0.9;
         };
 
-        float getQReciclada(){return reciclat;}
-        string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
+        //float getQReciclada(){return reciclat;}
+        //string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
+        float getReciclat(){return reciclat;}
         // implementacio NO efficient.
         // string getType(){return TIPUS;} 
 

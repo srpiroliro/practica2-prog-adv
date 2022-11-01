@@ -17,8 +17,9 @@ class Vidre: public ContenidorBrossa {
             EFFICIENCY=3; // 1kg = 3u
         };
 
-        long int getQReciclada(){return reciclat;}
-        string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
+        // long int getQReciclada(){return reciclat;}
+        // string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
+        float getReciclat(){return reciclat;}
         // implementacio NO efficient.
         // string getType(){return TIPUS;} 
 

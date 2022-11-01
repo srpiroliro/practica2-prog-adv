@@ -105,11 +105,12 @@ class Poblacio{
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr){
-                    if(curr->con->getQReciclada()>r->getQReciclada()) r=curr->con;
+                    if(curr->getReciclat()>r->getReciclat())
+                        r=curr;
                     curr=curr->seg;
                 }
             }
-            if(r) throw("no existex cap contanidor.");
+            if(r==NULL) throw("no existex cap contanidor.");
             return r;
         }
 

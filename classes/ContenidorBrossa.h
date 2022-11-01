@@ -104,7 +104,8 @@ class ContenidorBrossa {
 
         // VIRTUALS
         virtual void buidat(float pes)=0; // paràmetre el pes en quilograms del contenidor abans de buidar
-        virtual string getReciclat()=0;
+        // virtual string getReciclat()=0;
+        virtual float getReciclat()=0;
         // virtual string getType()=0; // implementacio NO efficient.
 
 
@@ -152,7 +153,7 @@ class ContenidorBrossa {
         // [1]!="-" => MAL
         // si [0] es pot passar a int => gut (try/catch) + lalrgada de 2
         // comprovar que [2] sigui tot lletres + llargada de 4
-        // verificar si ja existeix?
+        // verificar si ja existeix? no es pot comprobar des de aqui pq no tenim info de tots els contenidors.
 
         return regex_match(codi, regex("[a-zA-Z]{2}-\d{4}"));
     }
