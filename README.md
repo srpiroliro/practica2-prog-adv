@@ -1,12 +1,13 @@
 ## TO DOs:
- 1. contenidors + ContenidorBrossa -> comprovar si `// implementacio mes efficient` es legal.
- 2. constructors Contenidors.
+ 1. DONE
+ 2. DONE
  3. ContenidorBrossa:
-    - `operator==(ContenidorBrossa *c)` => `(*this)` or `(this)`
-    - `verificar_codi()`
-    - diferencia entre `getType()` i `getTipusBrossa()`??
+    - DONE
+    - DONE
+    - DONE
  4. Poblacio
-    - `mesRendiment()`
-    - `operator==(Poblacio *d)` => `(*this)` or `(this)`
-    - `while(curr)` => curr.con potser igual a `NULL`
+    - DONE
+    - DONE
+    - DONE
  5. Comprovar el funcionament de tot
+ 6. Comprovar si getQRendiment() pot ser float per tots.

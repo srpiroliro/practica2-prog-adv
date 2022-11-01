@@ -16,19 +16,25 @@ class ContenidorBrossa {
             int anyColocacio,
             float tara
         ){ 
-            if(verificar_codi()) this->codi=codi;
-            else throw("El codi ha de tenir 2 lletres i 4 numeros separats per un guio.");
+            if(!verificar_codi()) 
+                throw_error("El codi ha de tenir 2 lletres i 4 numeros separats per un guio.");
+            this->codi=codi;
 
-            if(color>=0 && color<=4) this->color=color;
-            else throw("El color ha de ser un valor entre 0 i 4.");
+            if(color<0 && color>4) 
+                throw_error("El color ha de ser un valor entre 0 i 4.");
+            this->color=color;
 
+            if((anyColocacio!=0 && ubicacio=="")||(anyColocacio==0 && ubicacio!="")) 
+                throw_error("nomes poden tenir valors \"null\"s els dos a l'hora");
             this->ubicacio=ubicacio;
             
-            if(anyColocacio<=getAnyActual()) this->anyColocacio=anyColocacio;
-            else throw("No es pot colocar un contenidor en el futur.");
+            if(anyColocacio>getAnyActual()) 
+                throw_error("No es pot colocar un contenidor en el futur.");
+            this->anyColocacio=anyColocacio;
 
-            if(tara>=0) this->tara=tara;
-            else throw("La tara ha de ser un valor positiu.");
+            if(tara<=0) 
+                throw_error("La tara ha de ser un valor positiu.");
+            this->tara=tara;
         }
         ContenidorBrossa(
             string codi, 
@@ -40,9 +46,6 @@ class ContenidorBrossa {
         }
 
         // CONSTANTS
-        // enum {GROC, GRIS, MARRO, VERD, BLAU}; // enum es const
-        // aka: GROC=0, GRIS=1, MARRO=2 ...
-
         static const int GROC=0;
         static const int GRIS=1;
         static const int MARRO=2;
@@ -60,7 +63,7 @@ class ContenidorBrossa {
             }
         }
         string getUbicacio(){
-            if(ubicacio=="") throw "El contenidor no esta ubicat";
+            if(ubicacio=="") throw_error("El contenidor no esta ubicat");
             else return ubicacio;
         }
         string getEstat(){
@@ -73,26 +76,23 @@ class ContenidorBrossa {
         string getCodi(){return codi;} 
 
         // SETS
-        void setUbicacio(string ubicacio){this->ubicacio=ubicacio;}
-
-        // ACTIONS
-        void retirarViaPublica(){
-            if(ubicacio=="") 
-                throw "El contenidor no esta a la via pública";
-            this->anyRetirada=getAnyActual();
-            this->ubicacio="";
-            this->anyColocacio=0;
-        }
         void setUbicacio(string ubicacio){
-            if(ubicacio == "") retirarViaPublica();
+            if(ubicacio=="") retirarViaPublica();
             else{
                 this->ubicacio=ubicacio;
                 this->anyColocacio=getAnyActual();
             }
         }
-        void toString(){
-            cout << getReciclat(); // CHECK: implementacio mes efficient.
 
+        // ACTIONS
+        void retirarViaPublica(){
+            if(ubicacio=="") throw_error("El contenidor no esta a la via pública");
+            this->anyRetirada=getAnyActual();
+            this->ubicacio="";
+            this->anyColocacio=0;
+        }
+        void toString(){
+            cout << getReciclat(); // mes efficient.
             cout << "Codi: " << codi << '\n';
             cout << "Color: " << getTipusBrossa() << '\n';
             if(ubicacio!="") 
@@ -103,24 +103,20 @@ class ContenidorBrossa {
         }
 
         // VIRTUALS
-        virtual void buidat(float pes)=0; // paràmetre el pes en quilograms del contenidor abans de buidar
-        // virtual string getReciclat()=0;
-        virtual float getReciclat()=0;
+        virtual void buidat(float pes)=0;
+        virtual string getReciclat()=0;
+        virtual float getQReciclat()=0;
         // virtual string getType()=0; // implementacio NO efficient.
 
 
         // OPERATORS
         bool operator>(ContenidorBrossa *p){return codi.compare(p->getCodi())>0;}
-        bool operator<(ContenidorBrossa *p){return !((*this)>p);} 
-        bool operator==(ContenidorBrossa *p){return ( !( (this)>p ) && !( (*this)<p) );} // TODO: (*this) or (this)
+        bool operator<(ContenidorBrossa *p){return !((*this)>(p));} 
+        bool operator==(ContenidorBrossa *p){return ( !( (*this)>p ) && !( (*this)<p) );}
 
 
         // DECONSTRUCTOR
         ~ContenidorBrossa(){} 
-
-
-        // CHECK: implementacio mes efficient.
-        string getType(){return TIPUS;} // inutil
 
     protected:
         float tara;
@@ -128,16 +124,9 @@ class ContenidorBrossa {
         // CHECK: implementacio mes efficient.
         string UMESURA;
         float EFFICIENCY;
-        string TIPUS=getTipusBrossa();
 
-
-    
-    string codi;
-    int color;
-    string ubicacio;
-    int anyColocacio;
-    int anyRetirada;
-
+    string codi, ubicacio;
+    int color,anyColocacio,anyRetirada;
     
     int getAnyActual(){
         time_t now;
@@ -147,14 +136,29 @@ class ContenidorBrossa {
         return now_tm->tm_year+1900;
     }
 
-    // TODO:
     bool verificar_codi(){
-        // regex legal? si no ho es, partir str en tres i: 
-        // [1]!="-" => MAL
-        // si [0] es pot passar a int => gut (try/catch) + lalrgada de 2
-        // comprovar que [2] sigui tot lletres + llargada de 4
-        // verificar si ja existeix? no es pot comprobar des de aqui pq no tenim info de tots els contenidors.
+        if(codi.length()!=7) 
+            throw_error("el codi ha de ser XX-YYY, X sent lletres majs, i Y nums.");
+    
+        string letters=codi.substr(0, 2),
+            dash=codi.substr(2, 1),
+            numbers=codi.substr(3, 4);
+        bool ex=0; int x=0;
+        try{ x=stoi(numbers); }
+        catch(exception& e){ ex=1; }
+        
+        if(dash!="-")
+            throw_error("el 3r char ha de ser un \"-\"!");
+        if(!("AA"<=letters&&letters<="ZZ"))
+            throw_error("els dos primers chars had d'estar entre AA-ZZ!");
+        if (ex || x<1111 || x>9999) 
+            throw_error("el rang dels nums ha de ser [1111, 9999]");
+        
+        return 1;
+    }
 
-        return regex_match(codi, regex("[a-zA-Z]{2}-\d{4}"));
+    // mes efficient seria crear una classe Error i guardarho alla.
+    void throw_error(string error){
+        cerr<<"ERROR: "<<error<<endl; throw;
     }
 };

@@ -4,13 +4,6 @@
 
 class Rebuig: public ContenidorBrossa {
     public:
-        // TODO:
-        // Cada subclasse informarà a la superclasse del seu color (imprescindible 
-        // usar els atributs estàtics de la classe ContenidorBrossa). 
-        // No ha de ser un paràmetre del constructor. L’atribut propi s’inicialitza a zero.
-        //                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-        //                                                          ?????
-
         Rebuig(string codi,string ubicacio,int anyColocacio,int tara):ContenidorBrossa(codi, ContenidorBrossa::GRIS, ubicacio, anyColocacio, tara){
             // implementacio mes efficient.
             UMESURA="TONES";
@@ -18,10 +11,10 @@ class Rebuig: public ContenidorBrossa {
         };
 
         // float getQReciclada(){return reciclat;}
-        // string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
-        float getReciclat(){return reciclat;}
+        string getReciclat(){return("Reciclat: "+to_string(reciclat)+" "+UMESURA);}
+        float getQReciclat(){return reciclat;}
         // implementacio NO efficient.
-        // string getType(){return TIPUS;} 
+        // string getType(){return TIPUS;}  // fa el mateix que getTipusBrossa()
 
         // implementacio NO efficient.
         // void toString(){

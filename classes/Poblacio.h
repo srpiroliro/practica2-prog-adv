@@ -18,51 +18,50 @@ class Poblacio{
         Poblacio(){
             contenidors=new node*[CONTENIDORS_LEN];
             for (int i=0;i<CONTENIDORS_LEN;i++){
-                contenidors[i]->con=NULL;
-                contenidors[i]->seg=NULL;
+                // node *aux=new node;
+                // aux->con=NULL; aux->seg=NULL;
+                // contenidors[i]=aux;
+
+                contenidors[i]=NULL;
             }
         }
         Poblacio(ContenidorBrossa *p):Poblacio(){afegirContenidor(p);}
 
         void afegirContenidor(ContenidorBrossa *p){
-            int ind=getTipusId(p->getType());
-
-            // TODO: optimitzable? no cal afegir al final de la linkedlist
-
-            node *curr=contenidors[ind];
-            if(!curr->con) curr->con=p;
-            // else if(hiEs(p->getCodi())) throw("Ja hi existeix!");
+            // 1.
+            string topic=""; bool ex=0;
+            try{topic=hiEs(p->getCodi());}
+            catch(exception& e){ex=1;}
             
-            else {
-                while(curr){
-                    if(curr->con==p) throw("Ja hi existeix!");
-                    curr=curr->seg;
-                }
-                node *nou=new node; 
-                nou->con=p; nou->seg=NULL;
-                curr->seg=nou;
+            if(ex){
+                int ind=getTipusId(topic);
+                node *aux=contenidors[ind];
+                node *nou=new node; nou->con=p; nou->seg=aux;
+                contenidors[ind]=nou;
             }
+
+            // 2.
+            // int ind=getTipusId(p->getType()); // p->getType()
+            // node *curr=contenidors[ind];
+            
+            // while(curr){
+            //     if(curr->con==p) 
+            //         throw_error("Ja hi existeix!");
+            //     curr=curr->seg;
+            // }
+            // node *nou=new node; nou->con=p; nou->seg=NULL;
+            // curr->seg=nou;
         }
 
         void afegirContenidor(string codi, int color, string ubicacio, int anyColocacio, float tara){
             ContenidorBrossa *p;
             switch (color){
-                case ContenidorBrossa::GROC:
-                    p=new Plastic(codi,ubicacio,anyColocacio,tara);
-                    break;
-                case ContenidorBrossa::GRIS:
-                    p=new Rebuig(codi,ubicacio,anyColocacio,tara);
-                    break;
-                case ContenidorBrossa::MARRO:
-                    p=new Organic(codi,ubicacio,anyColocacio,tara);
-                    break;
-                case ContenidorBrossa::VERD:
-                    p=new Vidre(codi,ubicacio,anyColocacio,tara);
-                    break;
-                case ContenidorBrossa::BLAU:
-                    p=new Paper(codi,ubicacio,anyColocacio,tara);
-                    break;
-                default: throw("uknown color");
+                case ContenidorBrossa::GROC:p=new Plastic(codi,ubicacio,anyColocacio,tara);break;
+                case ContenidorBrossa::GRIS:p=new Rebuig(codi,ubicacio,anyColocacio,tara);break;
+                case ContenidorBrossa::MARRO:p=new Organic(codi,ubicacio,anyColocacio,tara);break;
+                case ContenidorBrossa::VERD:p=new Vidre(codi,ubicacio,anyColocacio,tara);break;
+                case ContenidorBrossa::BLAU:p=new Paper(codi,ubicacio,anyColocacio,tara);break;
+                default: throw_error("uknown color");
             }
             afegirContenidor(p);
         }
@@ -70,16 +69,13 @@ class Poblacio{
         string hiEs(string codi){
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
-
-                // TODO: curr.con pot ser NULL
-
-                while(curr){
+                while(curr!=NULL){
                     if(curr->con->getCodi()==codi) 
-                        return curr->con->getType();
+                        return curr->con->getTipusBrossa(); // curr->con->getType()
                     curr=curr->seg;
                 }
             }
-            throw("no existeix");
+            throw_error("no existeix");
         }
 
         void eliminarContenidor(ContenidorBrossa *c){ // TEST
@@ -87,14 +83,12 @@ class Poblacio{
             int tipus=getTipusId(color);
 
             node *anterior=contenidors[tipus];
-            if(anterior->con->getCodi()==c->getCodi()){
-                contenidors[tipus]=anterior->seg;
-            }else{
+            if(*(anterior->con)==c) contenidors[tipus]=anterior->seg;
+            else{
                 bool trobat=0;
                 while(anterior->seg!=NULL && !trobat){
-                    if(anterior->seg->con->getCodi()==c->getCodi()){
-                        anterior->seg=anterior->seg->seg;
-                        trobat=1;
+                    if(*(anterior->seg->con)==c){
+                        anterior->seg=anterior->seg->seg; trobat=1;
                     } else anterior=anterior->seg;
                 }
             }
@@ -105,22 +99,19 @@ class Poblacio{
             for(int i=0;i<CONTENIDORS_LEN; i++){
                 node *curr=contenidors[i];
                 while(curr){
-                    if(curr->getReciclat()>r->getReciclat())
-                        r=curr;
+                    if(curr->con->getQReciclat()>r->getQReciclat()) 
+                        r=curr->con;
                     curr=curr->seg;
                 }
             }
-            if(r==NULL) throw("no existex cap contanidor.");
+            if(r==NULL) throw_error("no existex cap contanidor.");
             return r;
         }
 
         int getQuants(int color){
             int c=0;
             node *curr=contenidors[color];
-            while(curr){
-                curr=curr->seg;
-                c++;
-            }
+            while(curr){ curr=curr->seg; c++; }
             return c;
         }
 
@@ -132,17 +123,17 @@ class Poblacio{
 
         void toString(){
             for(int i=0;i<CONTENIDORS_LEN; i++){
-                node *curr=contenidors[i];
-                bool primer=1;
+                node *curr=contenidors[i]; int c=1;
                 while(curr){
-                    if(primer){
-                        cout << "Contenidors de " << curr->con << ":\n";
-                        cout << "+++++++++++++++++++++++++++++++++++"<<'\n\n';
+                    if(c==1){
+                        cout << "Contenidors de " << curr->con->getTipusBrossa() << ":\n";
+                        cout << "+++++++++++++++++++++++++++++++++++\n\n";
                     }
-                    curr->con->toString(); 
-                    curr=curr->seg;
+                    cout << "\nContenidor "<<to_string(c)<<":\n";
+                    curr->con->toString(); curr=curr->seg;
+                    c++;
                 }
-                cout << "\n\n";
+                cout << "\n-----------------------------------" << "\n\n";
             }
             cout << endl;
         }
@@ -150,10 +141,10 @@ class Poblacio{
         // OPERATORS
         bool operator<(Poblacio d){return getQuants()<d.getQuants();} 
         bool operator>(Poblacio d){return !(getQuants()<d.getQuants());}
-        bool operator==(Poblacio d){return ( !((*this)>d) && !((*this)<d) );} // TODO: (*this) or (this)
+        bool operator==(Poblacio d){return ( !((*this)>d) && !((*this)<d) );}
         
 
-        ~Poblacio(){delete[] contenidors;} // "alliberar l’espai ocupat per la població: contenidors, vector i nodes" ???
+        ~Poblacio(){delete[] contenidors;}
     
     string nom;
     int anyCreacio;
@@ -171,5 +162,10 @@ class Poblacio{
         if(t=="Organic") return ContenidorBrossa::MARRO;
         if(t=="Vidre") return ContenidorBrossa::VERD;
         if(t=="Paper") return ContenidorBrossa::BLAU;
+    }
+
+    // mes efficient seria crear una classe Error i guardarho alla.
+    void throw_error(string error){
+        cerr<<"ERROR: "<<error<<endl; throw;
     }
 };
